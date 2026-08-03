@@ -1,12 +1,14 @@
 import express from "express";
 import connectDB from "./config/db.js";
 import dotenv, { configDotenv } from "dotenv";
+import incidentRoutes from "./routes/incidentRoutes.js";
 
 configDotenv()
 
 const app = express();
 
 app.use(express.json());
+app.use("/api/incidents", incidentRoutes);
 
 app.get("/", (req, res) => {
     res.send("Server is Running")
