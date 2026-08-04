@@ -1,0 +1,108 @@
+[
+    {
+  "title": "Unauthorized Entry",
+  "description": "Visitor accessed a staff-only corridor near Gallery 213 without permission.",
+  "severity": "Medium",
+  "ai_risk_level": "Low",
+  "operationContext": "After-hours gallery surveillance"
+},
+{
+  "title": "Suspicious Bag",
+  "description": "Unattended backpack found near the Sculpture Garden seating area.",
+  "severity": "High",
+  "ai_risk_level": "Medium",
+  "operationContext": "High-value exhibit monitoring"
+},
+{
+  "title": "Guest Altercation",
+  "description": "Two guests engaged in a verbal dispute near the main lobby ticketing area.",
+  "severity": "Medium",
+  "ai_risk_level": "Low",
+  "operationContext": "Crowd flow during peak hours"
+},
+{
+  "title": "Artwork Touch Attempt",
+  "description": "Visitor attempted to touch a painting in the Abstract Expressionism, Geffen wing.",
+  "severity": "High",
+  "ai_risk_level": "High",
+  "operationContext": "High-value exhibit monitoring"
+},
+{
+  "title": "Medical Emergency",
+  "description": "Guest fainted near the escalators on the second floor. EMS notified.",
+  "severity": "Critical",
+  "ai_risk_level": "Low",
+  "operationContext": "Emergency response coordination"
+},
+{
+  "title": "Fire Alarm Trigger",
+  "description": "Fire alarm activated in the mechanical room. No smoke detected upon inspection.",
+  "severity": "High",
+  "ai_risk_level": "Medium",
+  "operationContext": "Facility safety monitoring"
+},
+{
+  "title": "Lost Child",
+  "description": "Child reported missing near the Education Center. Located safely within 10 minutes.",
+  "severity": "Medium",
+  "ai_risk_level": "Low",
+  "operationContext": "Public safety and guest assistance"
+},
+{
+  "title": "Theft Attempt",
+  "description": "Individual attempted to remove merchandise without paying in the MoMA Design Store.",
+  "severity": "High",
+  "ai_risk_level": "Medium",
+  "operationContext": "Retail security monitoring"
+},
+{
+  "title": "Vandalism Attempt",
+  "description": "Visitor attempted to mark a wall near a contemporary art installation in gallery 515.",
+  "severity": "High",
+  "ai_risk_level": "High",
+  "operationContext": "Gallery protection"
+},
+{
+  "title": "Elevator Malfunction",
+  "description": "Blade elevator stalled briefly between floors. Guests escorted safely.",
+  "severity": "Medium",
+  "ai_risk_level": "Low",
+  "operationContext": "Facility operations"
+},
+{
+  "title": "Aggressive Guest",
+  "description": "Guest became verbally aggressive with staff over ticket pricing.",
+  "severity": "Medium",
+  "ai_risk_level": "Low",
+  "operationContext": "Visitor Engagement"
+},
+{
+  "title": "Water Spill",
+  "description": "Large spill near Terrace café seating area caused slipping hazard.",
+  "severity": "Low",
+  "ai_risk_level": "Low",
+  "operationContext": "Facility safety"
+},
+{
+  "title": "Emergency Exit Alarm",
+  "description": "Emergency exit door opened by a visitor unaware of restrictions.",
+  "severity": "Medium",
+  "ai_risk_level": "Low",
+  "operationContext": "Emergency system monitoring"
+},
+{
+  "title": "Drone Sighting",
+  "description": "Small drone observed hovering near the Sculpture Garden perimeter.",
+  "severity": "High",
+  "ai_risk_level": "High",
+  "operationContext": "Perimeter security"
+},
+{
+  "title": "Guest Injury",
+  "description": "Guest tripped on stairs near Gallery 517 and sustained minor injuries.",
+  "severity": "Medium",
+  "ai_risk_level": "Low",
+  "operationContext": "Emergency response"
+}
+
+]
