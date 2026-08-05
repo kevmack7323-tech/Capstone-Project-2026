@@ -19,11 +19,11 @@ export default function IncidentList() {
     }, []);
 
     return (
-        <div>
+        <div style={{ padding: "20px" }} >
             <h1>MoMA Security Incidents</h1>
 
             {incidents.map(incident => (
-                <div key={incident._id}>
+                <div key={incident._id} style={{ border: "1px solid grey", padding: "10px", margin: "10px 0" }} >
                     <h2>{incident.title}</h2>
                     <p>{incident.description}</p>
                     <p><strong>Severity:</strong> {incident.severity}</p>
