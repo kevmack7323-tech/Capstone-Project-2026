@@ -7,7 +7,7 @@ function App() {
 
   return (
     <>
-     Hello
+     <IncidentList/>
     </>
   )
 }
