@@ -60,7 +60,7 @@ export default function IncidentList() {
                 <button>New Incident</button>
             </a>
             {incidents.map(incident => (
-                <div key={incident._id} style={{ border: "1px solid grey", padding: "10px", margin: "10px 0" }} >
+                <div key={incident._id} className="incident-card" >
                     <h2>{incident.title}</h2>
                     <p>{incident.description}</p>
                     <p>

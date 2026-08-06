@@ -15,7 +15,7 @@ export default function Home() {
         context in real time.
       </p>
 
-      <p>
+      <p className="home-description">
         Use the button below to access all recorded incidents and begin
         managing your security data.
       </p>

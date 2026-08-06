@@ -19,12 +19,17 @@ h1, h2 {
 }
 
 .incident-card {
-  background: white;
+  background: navy;
+  color: white;             
   padding: 20px;
   margin: 15px 0;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
+.incident-card h2 {
+  color: #4facfe;
+}
+
 
 .badge {
   padding: 4px 10px;
@@ -96,6 +101,61 @@ form select {
   border: 1px solid #ccc;
   margin-bottom: 10px;
 }
+
+/* ---------- HOME PAGE DARK MODE ---------- */
+
+.home-container {
+  background: navy;
+  color: #eaeaea;
+  min-height: 100vh;
+  padding: 60px 20px;
+}
+
+.home-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.brand-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #4facfe;
+  margin-bottom: 10px;
+}
+
+.brand-tagline {
+  font-size: 1.2rem;
+  opacity: 0.85;
+}
+
+.home-content {
+  max-width: 750px;
+  margin: 0 auto;
+  text-align: center;
+  line-height: 1.7;
+}
+
+.home-description {
+  font-size: 1.15rem;
+  margin-bottom: 25px;
+}
+
+.home-button {
+  background: #4facfe;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 8px;
+  color: white;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 20px;
+}
+
+.home-button:hover {
+  background: #00c6ff;
+}
+
 
 /* Mobile Styling */
 @media (max-width: 600px) {
