@@ -1,9 +1,13 @@
 export default function Home() {
   return (
-    <div className="container">
-      <h1>Security Operations Incident Tracker</h1>
+      <div className="home-container">
+      <header className="home-header">
+        <h1 className="brand-title">MackSolutions</h1>
+        <p className="brand-tagline">Security Operations Incident Tracker</p>
+      </header>
 
-      <p>
+      <section className="home-content">
+        <p className="home-description">
         This application provides security teams with a centralized platform
         to log, review, and manage incidents across any operational environment.
         It supports consistent reporting, improves situational awareness, and
@@ -16,9 +20,13 @@ export default function Home() {
         managing your security data.
       </p>
 
-      <a href="/incidents">
-        <button>Show Incidents</button>
-      </a>
-    </div>
+        <button
+          className="home-button"
+          onClick={() => (window.location.href = "/incidents")}
+        >
+          Show Incidents
+        </button>
+      </section>
+      </div>
   );
 }
