@@ -1,3 +1,5 @@
+import logo from "../assets/logo.png";
+
 export default function Home() {
   return (
       <div className="home-container">
@@ -27,6 +29,7 @@ export default function Home() {
           Show Incidents
         </button>
       </section>
+      <img src={logo} alt="MackSolutions Logo" className="brand-logo" />
       </div>
   );
 }
