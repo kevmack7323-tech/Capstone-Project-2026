@@ -24,3 +24,21 @@ h1, h2 {
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
+.badge {
+  padding: 4px 10px;
+  border-radius: 5px;
+  color: white;
+  margin-left: 8px;
+  font-weight: bold;
+}
+
+.badge-low { background: #4caf50; }
+.badge-medium { background: #ff9800; }
+.badge-high { background: #f44336; }
+.badge-critical { background: #b71c1c; }
+
+.badge-unknown {
+  background: #9e9e9e;
+  color: white;
+}
+
