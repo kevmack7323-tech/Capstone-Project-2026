@@ -31,6 +31,7 @@ export default function IncidentList() {
                     <p><strong>Severity:</strong> {incident.severity}</p>
                     <p><strong>AI Risk:</strong> {incident.ai_risk_level}</p>
                     <p><strong>Context:</strong> {incident.operationContext}</p>
+                    <button onClick={() => handleDelete(incident._id)}>Delete</button>
                 </div>
             ))}
         </div>
