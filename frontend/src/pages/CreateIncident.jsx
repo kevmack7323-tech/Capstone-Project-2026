@@ -27,7 +27,7 @@ export default function CreateIncident() {
   };
 
   return (
-    <div>
+    <div className="container frorm-container">
       <h1>Create New Incident</h1>
 
       <form onSubmit={handleSubmit}>
