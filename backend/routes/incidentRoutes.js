@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getIncidents,
+  getIncidentById,
   createIncident,
   updateIncident,
   deleteIncident
@@ -9,6 +10,7 @@ import {
 const router = express.Router();
 
 router.get("/", getIncidents);
+router.get("/:id", getIncidentById);
 router.post("/", createIncident);
 router.put("/:id", updateIncident);
 router.delete("/:id", deleteIncident);
