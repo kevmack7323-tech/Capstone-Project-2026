@@ -3,6 +3,7 @@ import { useState } from 'react'
 import './App.css'
 import IncidentList from './pages/IncidentList'
 import CreateIncident from './pages/CreateIncident';
+import Navbar from "./components/Navbar";
 
 function App() {
   const [count, setCount] = useState(0)
