@@ -4,6 +4,7 @@ import './App.css'
 import IncidentList from './pages/IncidentList'
 import CreateIncident from './pages/CreateIncident';
 import Navbar from "./components/Navbar";
+import EditIncident from "./pages/EditIncident";
 
 function App() {
   const [count, setCount] = useState(0)
@@ -14,6 +15,7 @@ function App() {
       <Routes>
         <Route path="/" element={<IncidentList />} />
         <Route path="/create" element={<CreateIncident />} />
+        <Route path="/edit/:id" element={<EditIncident />} />
       </Routes>
     </Router>
   )
