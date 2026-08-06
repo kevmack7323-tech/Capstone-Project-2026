@@ -33,7 +33,7 @@ export default function EditIncident() {
   if (!incident) return <p>Loading...</p>;
 
   return (
-    <div>
+    <div className="container form-container">
       <h1>Edit Incident</h1>
 
       <form onSubmit={handleSubmit}>
