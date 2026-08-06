@@ -1,3 +1,4 @@
+/* Global Stlying */
 body {
   margin: 0;
   padding: 0;
@@ -10,6 +11,7 @@ h1, h2 {
   margin: 0 0 10px;
 }
 
+/* Badge/ Card/ Container Stlying */
 .container {
   max-width: 900px;
   margin: 0 auto;
@@ -42,12 +44,14 @@ h1, h2 {
   color: white;
 }
 
+/* Button Stlying */
 button {
   padding: 10px 15px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 15px;
+  margin: 3px;
 }
 
 button:hover {
@@ -69,6 +73,7 @@ button:hover {
   color: white;
 }
 
+/* Form Stlying */
 .form-container {
   background: white;
   padding: 25px;
@@ -90,4 +95,16 @@ form select {
   border-radius: 5px;
   border: 1px solid #ccc;
   margin-bottom: 10px;
+}
+
+/* Mobile Styling */
+@media (max-width: 600px) {
+  .incident-card {
+    padding: 15px;
+  }
+
+  nav {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
