@@ -29,7 +29,7 @@ export default function IncidentList() {
 
 
     return (
-        <div style={{ padding: "20px" }} >
+        <div className="container" style={{ padding: "20px" }} >
             <h1>MoMA Security Incidents</h1>
             <a href="/create">
                 <button>New Incident</button>
