@@ -78,8 +78,8 @@ export default function IncidentList() {
 
                     </p>
                     <p><strong>Context:</strong> {incident.operationContext}</p>
-                    <a href={`/edit/${incident._id}`}><button>Edit</button></a>
-                    <button onClick={() => handleDelete(incident._id)}>Delete</button>
+                    <a href={`/edit/${incident._id}`}><button className="btn-primary">Edit</button></a>
+                    <button className="btn-danger" onClick={() => handleDelete(incident._id)}>Delete</button>
                 </div>
             ))}
         </div>
