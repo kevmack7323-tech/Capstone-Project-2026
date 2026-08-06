@@ -18,6 +18,16 @@ export default function IncidentList() {
         fetchIncidents();
     }, []);
 
+    const handleDelete = async (id) => {
+        try {
+            await api.delete(`/incidents/${id}`);
+            setIncidents(incidents.filter(i => i._id !== id));
+        } catch (error) {
+            console.log("Error deleting incident:", error);
+        }
+    };
+
+
     return (
         <div style={{ padding: "20px" }} >
             <h1>MoMA Security Incidents</h1>
