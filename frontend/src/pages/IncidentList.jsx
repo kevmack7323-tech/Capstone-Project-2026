@@ -21,7 +21,9 @@ export default function IncidentList() {
     return (
         <div style={{ padding: "20px" }} >
             <h1>MoMA Security Incidents</h1>
-
+            <a href="/create">
+                <button>New Incident</button>
+            </a>
             {incidents.map(incident => (
                 <div key={incident._id} style={{ border: "1px solid grey", padding: "10px", margin: "10px 0" }} >
                     <h2>{incident.title}</h2>
