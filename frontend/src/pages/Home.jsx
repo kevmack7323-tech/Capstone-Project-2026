@@ -9,6 +9,7 @@ export default function Home() {
       </header>
 
       <section className="home-content">
+        <div className="description-home">
         <p className="home-description">
         This application provides security teams with a centralized platform
         to log, review, and manage incidents across any operational environment.
@@ -16,12 +17,13 @@ export default function Home() {
         helps supervisors & control room operators monitor severity levels, risk factors, and response
         context in real time.
       </p>
-
+        </div>
+        <div className="home-usebtn">
       <p className="home-description">
         Use the button below to access all recorded incidents and begin
         managing your security data.
       </p>
-
+        </div>
         <button
           className="home-button"
           onClick={() => (window.location.href = "/incidents")}

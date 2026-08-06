@@ -19,6 +19,8 @@ h2 {
   padding: 20px;
 }
 
+
+
 .container button {
   margin-top: 17px;
 }
@@ -36,6 +38,9 @@ h2 {
   color: #4facfe;
 }
 
+.incident-severity{
+  margin-bottom: 7px;
+}
 
 .badge {
   padding: 4px 10px;
@@ -97,11 +102,24 @@ button:hover {
 
 /* Form Styling */
 .form-container {
-  background: white;
-  padding: 25px;
+  background: navy;
+  color: #4facfe;
+  padding: 45px;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-top: 20px
+  margin-top: 20px;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.form-container > h1{
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  margin: 3px;
+  color: white;
+  opacity: 0.95;
 }
 
 form label {
@@ -113,6 +131,7 @@ form label {
 form input,
 form textarea,
 form select {
+  
   width: 100%;
   padding: 10px;
   border-radius: 5px;
@@ -157,6 +176,11 @@ form select {
   opacity: 0.85;
 }
 
+.home-usebtn {
+  font-size: 1.2rem;
+  opacity: 0.75;
+}
+
 .home-content {
   max-width: 750px;
   margin: 0 auto;
@@ -167,6 +191,16 @@ form select {
 .home-description {
   font-size: 1.15rem;
   margin-bottom: 25px;
+}
+
+.description-home {
+  background-color: #1976d2;
+  margin-bottom: 25px;
+  border: none;
+  padding: 14px 19px;
+  border-radius: 8px;
+  color: white;
+  font-size: 1.1rem;
 }
 
 .home-button {

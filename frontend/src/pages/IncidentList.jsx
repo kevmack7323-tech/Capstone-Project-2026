@@ -63,13 +63,15 @@ export default function IncidentList() {
                 <div key={incident._id} className="incident-card" >
                     <h2>{incident.title}</h2>
                     <p>{incident.description}</p>
-                    <p>
-                        <strong>Severity:</strong>
-                        <span className={`badge badge-${getSeverityClass(incident.severity)}`}>
-                            {incident.severity || "Not specified"}
-                        </span>
+                    <div className="incident-severity">
+                        <p>
+                            <strong>Severity:</strong>
+                            <span className={`badge badge-${getSeverityClass(incident.severity)}`}>
+                                {incident.severity || "Not specified"}
+                            </span>
 
-                    </p>
+                        </p>
+                    </div>
                     <p>
                         <strong>AI Risk:</strong>
                         <span className={`badge badge-${getRiskClass(incident.aiRisk, incident.ai_risk_level)}`}>
