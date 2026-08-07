@@ -2,7 +2,10 @@ import Incident from "../models/Incident.js";
 
 export const getIncidents = async (req, res) => {
   try {
-    const incidents = await Incident.find();
+     const { severity } = req.query;
+
+    const filter = severity ? { severity } : {};
+    const incidents = await Incident.find(filter);
     res.status(200).json(incidents);
   } catch (error) {
     res.status(500).json({ message: error.message });

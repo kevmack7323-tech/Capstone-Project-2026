@@ -12,6 +12,27 @@ h2 {
   margin: 0 0 10px;
 }
 
+/* navbar styles */
+.nav-hover {
+  position: relative;
+}
+
+.nav-hover::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0%;
+  height: 2px;
+  background: #1976d2;
+  transition: width 0.25s ease;
+}
+
+.nav-hover:hover::after {
+  width: 100%;
+}
+
+
 /* Badge/ Card/ Container Styling */
 .container {
   max-width: 900px;
@@ -40,6 +61,7 @@ h2 {
 
 .incident-severity{
   margin-bottom: 7px;
+  margin-top: 7px;
 }
 
 .badge {

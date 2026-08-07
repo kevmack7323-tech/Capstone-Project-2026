@@ -4,11 +4,14 @@ import { useEffect, useState } from "react"
 export default function IncidentList() {
 
     const [incidents, setIncidents] = useState([]);
-
+    const [severityFilter, setSeverityFilter] = useState("");
     useEffect(() => {
         const fetchIncidents = async () => {
             try {
-                const result = await api.get("/incidents");
+                const url = severityFilter
+                    ? `/incidents?severity=${severityFilter}`
+                    : "/incidents";
+                const result = await api.get(url);
                 setIncidents(result.data);
             } catch (error) {
                 console.log("Error fetching incidents:", error)
@@ -16,7 +19,7 @@ export default function IncidentList() {
         };
 
         fetchIncidents();
-    }, []);
+    }, [severityFilter]);
 
     const handleDelete = async (id) => {
         try {
@@ -52,6 +55,16 @@ export default function IncidentList() {
         return "unknown";
     };
 
+    const severityOrder = {
+        Critical: 4,
+        High: 3,
+        Medium: 2,
+        Low: 1
+    };
+
+    const sortedIncidents = [...incidents].sort((a, b) => {
+        return severityOrder[b.severity] - severityOrder[a.severity];
+    })
 
     return (
         <div className="container">
@@ -59,7 +72,7 @@ export default function IncidentList() {
             <a href="/create">
                 <button>New Incident</button>
             </a>
-            {incidents.map(incident => (
+            {sortedIncidents.map(incident => (
                 <div key={incident._id} className="incident-card" >
                     <h2>{incident.title}</h2>
                     <p>{incident.description}</p>

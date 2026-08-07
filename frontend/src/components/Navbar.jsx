@@ -5,9 +5,9 @@ export default function Navbar() {
     <nav style={styles.nav}>
     <img src={logo} alt="MackSolutions Logo" className="navbrand-logo" style={styles.logo}/>
 
-      <a style={styles.link} href="/">Home</a>
-      <a style={styles.link} href="/incidents">Show Incidents</a>
-      <a style={styles.link} href="/create">Create Incident</a>
+      <a className="nav-hover" style={styles.link} href="/">Home</a>
+      <a className="nav-hover" style={styles.link} href="/incidents">Show Incidents</a>
+      <a className="nav-hover" style={styles.link} href="/create">Create Incident</a>
     </nav>
   );
 }
