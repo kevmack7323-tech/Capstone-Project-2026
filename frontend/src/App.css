@@ -53,15 +53,19 @@ h2 {
   margin: 15px 0;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  text-align: center;   
+ display: block;
 }
 
 .incident-card h2 {
   color: #4facfe;
+  text-align: center;
 }
 
 .incident-severity{
   margin-bottom: 7px;
   margin-top: 7px;
+  text-align: center;
 }
 
 .badge {
@@ -159,6 +163,7 @@ form select {
   border-radius: 5px;
   border: 1px solid #ccc;
   margin-bottom: 10px;
+  box-sizing: border-box;
 }
 
 /* Mobile Styling */
@@ -242,6 +247,13 @@ form select {
 }
 
 /* logo styles */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
 .brand-logo {
   width: 300px;
   height: auto;

@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import EditIncident from "./pages/EditIncident";
 import Home from "./pages/Home";
 
+
 function App() {
   const [count, setCount] = useState(0)
 

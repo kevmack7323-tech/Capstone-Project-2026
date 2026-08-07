@@ -31,7 +31,9 @@ export default function Home() {
           Show Incidents
         </button>
       </section>
+      <div className="logo-container">
       <img src={logo} alt="MackSolutions Logo" className="brand-logo" />
+      </div>
       </div>
   );
 }

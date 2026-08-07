@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
 export default function EditIncident() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [incident, setIncident] = useState(null);
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export default function EditIncident() {
 
     try {
       await api.put(`/incidents/${id}`, incident);
-      window.location.href = "/";
+      navigate("/incidents");
     } catch (error) {
       console.log("Error updating incident:", error);
     }
