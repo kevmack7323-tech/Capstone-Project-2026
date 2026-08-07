@@ -7,7 +7,7 @@ import cors from "cors";
 configDotenv()
 
 const app = express();
-
+//Middleware for parsing JSON request bodies and enabling CORS
 app.use(express.json());
 app.use(cors());
 app.use("/api/incidents", incidentRoutes);
@@ -17,7 +17,7 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT;
-
+//Connect to MongoDB database to store and retrieve incident records
 connectDB()
 
 app.listen(PORT, () => {

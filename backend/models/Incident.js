@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+//Mongoose Schema defining the structure of an incident in document
 const incidentSchema = new mongoose.Schema({
     title: { type: String, required: true },
     operationContext: { type: String, required: true },
