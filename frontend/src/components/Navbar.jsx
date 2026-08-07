@@ -1,5 +1,6 @@
 import logo from "../assets/logo.png";
 
+//Navigation bar for switching between pages in the application
 export default function Navbar() {
   return (
     <nav style={styles.nav}>

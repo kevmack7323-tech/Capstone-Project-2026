@@ -9,7 +9,7 @@ export default function CreateIncident() {
     const [aiRisk, setAiRisk] = useState("");
     const [severity, setSeverity] = useState("");
     const navigate = useNavigate();
-    
+    //Handle form submission and send new incident data to the backend API
     const handleSubmit = async (e) => {
         e.preventDefault();
 

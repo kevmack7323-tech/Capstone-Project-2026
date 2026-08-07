@@ -6,7 +6,7 @@ export default function EditIncident() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [incident, setIncident] = useState(null);
-
+  //Fetch the existing incident by ID so the form can be pre-filled for editing
   useEffect(() => {
     const fetchIncident = async () => {
       try {

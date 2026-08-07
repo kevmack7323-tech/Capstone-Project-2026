@@ -54,7 +54,7 @@ export default function IncidentList() {
         return "unknown";
     };
 
-    const severityOrder = {
+    const severityOrder = { //Sort incidents by severity so the most critical issues appear first
         critical: 4,
         high: 3,
         medium: 2,
@@ -80,8 +80,8 @@ export default function IncidentList() {
             <h1>MoMA Security Incidents</h1>
             <a href="/create">
                 <button className="btn-primary">New Incident</button>
-            </a>
-            {sortedIncidents.map(incident => (
+            </a> 
+            {sortedIncidents.map(incident => ( //Render each incident as a card with severity and Ai risk
                 <div key={incident._id} className="incident-card" >
                     <h2>{incident.title}</h2>
                     <p>{incident.description}</p>
