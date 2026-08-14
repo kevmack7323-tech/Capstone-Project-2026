@@ -14,7 +14,7 @@ const incidentSchema = new mongoose.Schema({
     },
 
     // calculated by ai
-    ai_risk_level: {
+    riskLevel: {
         type: String,
         enum: ['Low', 'Medium', 'High', 'Critical'],
         default: "Low"
