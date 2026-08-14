@@ -206,6 +206,13 @@ export default function IncidentList() {
                         </span>
                     </p>
 
+                    {/* AI Summary / Analysis (Add this block) */}
+                    {(incident.aiSummary || incident.summary || incident.aiAnalysis) && (
+                        <p className="meta-line" style={{ marginTop: '8px', fontStyle: 'italic', color: '#cbd5e1' }}>
+                            <strong>AI Summary:</strong> {incident.aiSummary || incident.summary || incident.aiAnalysis}
+                        </p>
+                    )}
+                    
                     {/* Context (Only displays if provided so empty fields won't leave a blank label) */}
                     {incident.operationContext && (
                         <p className="meta-line">
