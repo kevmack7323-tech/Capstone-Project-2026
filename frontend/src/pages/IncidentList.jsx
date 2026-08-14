@@ -1,18 +1,29 @@
 import api from "../api/axios.js";
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { useLocation, Link } from "react-router-dom";
 import { io } from "socket.io-client"
 import IncidentCharts from "../components/IncidentCharts.jsx";
 import { getIncidentMetrics } from "../utils/dashboardHelpers.js";
 
+
 export default function IncidentList() {
     const [incidents, setIncidents] = useState([]);
     const [severityFilter, setSeverityFilter] = useState("");
+    const severityFilterRef = useRef(severityFilter);
     const [showAnalytics, setShowAnalytics] = useState(false);
 
     const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const shouldRefresh = queryParams.get("refresh");
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const filterFromUrl = queryParams.get("severity") || "";
+        setSeverityFilter(filterFromUrl);
+    }, [location.search]);
+
+    // Keep ref updated with latest filter state
+    useEffect(() => {
+        severityFilterRef.current = severityFilter;
+    }, [severityFilter]);
 
     useEffect(() => {
         const fetchIncidents = async () => {
@@ -28,28 +39,51 @@ export default function IncidentList() {
         };
 
         fetchIncidents();
+    }, [severityFilter, location.search]);
 
-        // initialize Socket.io connection to backend server
-        const socket = io("http://localhost:5500");
+    // initialize Socket.io connection to backend server
+    useEffect(() => {
+        const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:5500";
+        const socket = io(SOCKET_URL);
 
         // listen for live incident creation broadcasts
         socket.on("incidentCreated", (newincident) => {
-            setIncidents((prevIncidents) => [newincident, ...prevIncidents]);
+            setIncidents((prev) => {
+                // If a severity filter is active, only add if it matches the filter
+                const currentFilter = severityFilterRef.current
+                if (currentFilter && newincident.severity?.toLowerCase() !== currentFilter.toLowerCase()) {
+                    return prev;
+                }
+                return [newincident, ...prev];
+            });
         });
 
         // listen for live updates 
         socket.on("incidentUpdated", (updatedIncident) => {
-            setIncidents((prevIncidents) =>
-                prevIncidents.map((inc) =>
-                    inc._id === updatedIncident._id ? updatedIncident : inc
-                )
-            );
+            setIncidents((prev) => {
+                const currentFilter = severityFilterRef.current;
+                const matchesFilter = !currentFilter ||
+                    updatedIncident.severity?.toLowerCase() === currentFilter.toLowerCase();
+
+                if (!matchesFilter) {
+                    return prev.filter((inc) => inc._id !== updatedIncident._id);
+                }
+
+                // If it exists in the list, update it; otherwise add it
+                const exists = prev.some((inc) => inc._id === updatedIncident._id);
+                if (exists) {
+                    return prev.map((inc) =>
+                        inc._id === updatedIncident._id ? updatedIncident : inc
+                    );
+                }
+                return [updatedIncident, ...prev]
+            });
         });
 
         // listen for live deletions 
         socket.on("incidentDeleted", (deletedId) => {
-            setIncidents((prevIncidents) =>
-                prevIncidents.filter((inc) => inc._id !== deletedId)
+            setIncidents((prev) =>
+                prev.filter((inc) => inc._id !== deletedId)
             );
         });
 
@@ -58,12 +92,12 @@ export default function IncidentList() {
         return () => {
             socket.disconnect();
         };
-    }, [severityFilter, location.search]);
+    }, []);
 
     const handleDelete = async (id) => {
         try {
             await api.delete(`/incidents/${id}`);
-            setIncidents(incidents.filter(i => i._id !== id));
+            setIncidents((prevIncidents) => prevIncidents.filter((i) => i._id !== id));
         } catch (error) {
             console.log("Error deleting incident:", error);
         }
@@ -130,40 +164,64 @@ export default function IncidentList() {
                         ☰ {showAnalytics ? 'Hide Analytics' : 'Analytics Dashboard'}
                     </button>
 
-                    <a href="/create">
+                    <Link to="/create">
                         <button className="btn-primary" style={{ margin: 0 }}>New Incident</button>
-                    </a>
+                    </Link>
                 </div>
             </div>
 
-            {/* Collapsible Analytics Dashboard Panel matching app theme */}
+            {/* Collapsible Analytics Dashboard Panel */}
             <IncidentCharts
                 incidents={incidentArray}
                 isOpen={showAnalytics}
                 onClose={() => setShowAnalytics(false)}
             />
 
-            {sortedIncidents.map(incident => (
+            {/* Incident Cards Feed */}
+            {sortedIncidents.map((incident) => (
                 <div key={incident._id} className="incident-card">
                     <h2>{incident.title}</h2>
-                    <p>{incident.description}</p>
-                    <div className="incident-severity">
-                        <p>
-                            <strong>Severity:</strong>
-                            <span className={`badge badge-${getSeverityClass(incident.severity) || "unknown"}`}>
-                                {incident.severity || "Not specified"}
-                            </span>
+                    <p className="incident-description">{incident.description}</p>
+
+                    {/* Location (Only displays if provided) */}
+                    {incident.location && (
+                        <p className="meta-line">
+                            <strong>Location:</strong> {incident.location}
                         </p>
-                    </div>
-                    <p>
-                        <strong>AI Risk:</strong>
-                        <span className={`badge badge-${getRiskClass(incident.aiRisk, incident.ai_risk_level) || "unknown"}`}>
+                    )}
+
+                    {/* Severity */}
+                    <p className="meta-line">
+                        <strong>Severity:</strong>{" "}
+                        <span className={`badge badge-${getSeverityClass(incident.severity)}`}>
+                            {incident.severity || "Not specified"}
+                        </span>
+                    </p>
+
+                    {/* AI Risk */}
+                    <p className="meta-line">
+                        <strong>AI Risk:</strong>{" "}
+                        <span className={`badge badge-${getRiskClass(incident.aiRisk, incident.ai_risk_level)}`}>
                             {incident.aiRisk || incident.ai_risk_level || "Not specified"}
                         </span>
                     </p>
-                    <p><strong>Context:</strong> {incident.operationContext}</p>
-                    <a href={`/edit/${incident._id}`}><button className="btn-primary">Edit</button></a>
-                    <button className="btn-danger" onClick={() => handleDelete(incident._id)}>Delete</button>
+
+                    {/* Context (Only displays if provided so empty fields won't leave a blank label) */}
+                    {incident.operationContext && (
+                        <p className="meta-line">
+                            <strong>Context:</strong> {incident.operationContext}
+                        </p>
+                    )}
+
+                    {/* Centered Buttons */}
+                    <div className="card-actions">
+                        <Link to={`/edit/${incident._id}`}>
+                            <button className="btn-edit">Edit</button>
+                        </Link>
+                        <button className="btn-delete" onClick={() => handleDelete(incident._id)}>
+                            Delete
+                        </button>
+                    </div>
                 </div>
             ))}
         </div>
