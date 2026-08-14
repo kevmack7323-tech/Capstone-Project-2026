@@ -1,10 +1,9 @@
 import api from "../api/axios.js";
 import { useEffect, useState, useRef } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { io } from "socket.io-client"
+import { io } from "socket.io-client";
 import IncidentCharts from "../components/IncidentCharts.jsx";
 import { getIncidentMetrics } from "../utils/dashboardHelpers.js";
-
 
 export default function IncidentList() {
     const [incidents, setIncidents] = useState([]);
@@ -14,6 +13,7 @@ export default function IncidentList() {
 
     const location = useLocation();
 
+    // Sync severityFilter state with URL search params
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
         const filterFromUrl = queryParams.get("severity") || "";
@@ -25,6 +25,7 @@ export default function IncidentList() {
         severityFilterRef.current = severityFilter;
     }, [severityFilter]);
 
+    // Fetch incidents
     useEffect(() => {
         const fetchIncidents = async () => {
             try {
@@ -32,25 +33,23 @@ export default function IncidentList() {
                     ? `/incidents?severity=${severityFilter}`
                     : "/incidents";
                 const result = await api.get(url);
-                setIncidents(Array.isArray(result.data) ? result.data : [])
+                setIncidents(Array.isArray(result.data) ? result.data : []);
             } catch (error) {
-                console.log("Error fetching incidents:", error)
+                console.log("Error fetching incidents:", error);
             }
         };
 
         fetchIncidents();
     }, [severityFilter, location.search]);
 
-    // initialize Socket.io connection to backend server
+    // Initialize Socket.io connection
     useEffect(() => {
         const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:5500";
         const socket = io(SOCKET_URL);
 
-        // listen for live incident creation broadcasts
         socket.on("incidentCreated", (newincident) => {
             setIncidents((prev) => {
-                // If a severity filter is active, only add if it matches the filter
-                const currentFilter = severityFilterRef.current
+                const currentFilter = severityFilterRef.current;
                 if (currentFilter && newincident.severity?.toLowerCase() !== currentFilter.toLowerCase()) {
                     return prev;
                 }
@@ -58,7 +57,6 @@ export default function IncidentList() {
             });
         });
 
-        // listen for live updates 
         socket.on("incidentUpdated", (updatedIncident) => {
             setIncidents((prev) => {
                 const currentFilter = severityFilterRef.current;
@@ -69,26 +67,20 @@ export default function IncidentList() {
                     return prev.filter((inc) => inc._id !== updatedIncident._id);
                 }
 
-                // If it exists in the list, update it; otherwise add it
                 const exists = prev.some((inc) => inc._id === updatedIncident._id);
                 if (exists) {
                     return prev.map((inc) =>
                         inc._id === updatedIncident._id ? updatedIncident : inc
                     );
                 }
-                return [updatedIncident, ...prev]
+                return [updatedIncident, ...prev];
             });
         });
 
-        // listen for live deletions 
         socket.on("incidentDeleted", (deletedId) => {
-            setIncidents((prev) =>
-                prev.filter((inc) => inc._id !== deletedId)
-            );
+            setIncidents((prev) => prev.filter((inc) => inc._id !== deletedId));
         });
 
-
-        // CLeanup socket connection on component unmount 
         return () => {
             socket.disconnect();
         };
@@ -112,17 +104,17 @@ export default function IncidentList() {
         return "unknown";
     };
 
-    const getRiskClass = (aiRisk, ai_risk_level) => {
-        const value = aiRisk || ai_risk_level;
-        if (!value) return "unknown";
-        const normalized = value.toLowerCase();
+    // Map risk level in mongoose schema
+    const getRiskClass = (riskLevel) => {
+        if (!riskLevel) return "unknown";
+        const normalized = riskLevel.toLowerCase();
         if (["low", "medium", "high", "critical"].includes(normalized)) {
             return normalized;
         }
         return "unknown";
     };
 
-    const severityOrder = { //Sort incidents by severity so the most critical issues appear first
+    const severityOrder = {
         critical: 4,
         high: 3,
         medium: 2,
@@ -170,7 +162,6 @@ export default function IncidentList() {
                 </div>
             </div>
 
-            {/* Collapsible Analytics Dashboard Panel */}
             <IncidentCharts
                 incidents={incidentArray}
                 isOpen={showAnalytics}
@@ -183,14 +174,12 @@ export default function IncidentList() {
                     <h2>{incident.title}</h2>
                     <p className="incident-description">{incident.description}</p>
 
-                    {/* Location (Only displays if provided) */}
                     {incident.location && (
                         <p className="meta-line">
                             <strong>Location:</strong> {incident.location}
                         </p>
                     )}
 
-                    {/* Severity */}
                     <p className="meta-line">
                         <strong>Severity:</strong>{" "}
                         <span className={`badge badge-${getSeverityClass(incident.severity)}`}>
@@ -198,29 +187,33 @@ export default function IncidentList() {
                         </span>
                     </p>
 
-                    {/* AI Risk */}
+                    {/* AI Risk Level */}
                     <p className="meta-line">
                         <strong>AI Risk:</strong>{" "}
-                        <span className={`badge badge-${getRiskClass(incident.aiRisk, incident.ai_risk_level)}`}>
-                            {incident.aiRisk || incident.ai_risk_level || "Not specified"}
+                        <span className={`badge badge-${getRiskClass(incident.riskLevel)}`}>
+                            {incident.riskLevel || "Not specified"}
                         </span>
                     </p>
 
-                    {/* AI Summary / Analysis (Add this block) */}
-                    {(incident.aiSummary || incident.summary || incident.aiAnalysis) && (
-                        <p className="meta-line" style={{ marginTop: '8px', fontStyle: 'italic', color: '#cbd5e1' }}>
-                            <strong>AI Summary:</strong> {incident.aiSummary || incident.summary || incident.aiAnalysis}
-                        </p>
-                    )}
-                    
-                    {/* Context (Only displays if provided so empty fields won't leave a blank label) */}
-                    {incident.operationContext && (
-                        <p className="meta-line">
-                            <strong>Context:</strong> {incident.operationContext}
+                    {/* AI Summary */}
+                    {incident.aiSummary && (
+                        <p className="meta-line" style={{ marginTop: '8px' }}>
+                            <strong>AI Summary:</strong> {incident.aiSummary}
                         </p>
                     )}
 
-                    {/* Centered Buttons */}
+                    {/* AI Tactical Recommendations */}
+                    {incident.tacticalRecommendations && incident.tacticalRecommendations.length > 0 && (
+                        <div className="meta-line" style={{ marginTop: '8px' }}>
+                            <strong>Tactical Recommendations:</strong>
+                            <ul style={{ margin: '4px 0 0 20px', padding: 0 }}>
+                                {incident.tacticalRecommendations.map((rec, index) => (
+                                    <li key={index}>{rec}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
                     <div className="card-actions">
                         <Link to={`/edit/${incident._id}`}>
                             <button className="btn-edit">Edit</button>
