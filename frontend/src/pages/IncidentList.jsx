@@ -1,10 +1,13 @@
 import api from "../api/axios.js";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import IncidentCharts from "../components/IncidentCharts.jsx";
+import { getIncidentMetrics } from "../utils/dashboardHelpers.js";
 
 export default function IncidentList() {
     const [incidents, setIncidents] = useState([]);
     const [severityFilter, setSeverityFilter] = useState("");
+    const [showAnalytics, setShowAnalytics] = useState(false);
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -75,14 +78,42 @@ export default function IncidentList() {
         return bSeverity - aSeverity;
     });
 
+    const metrics = getIncidentMetrics(incidentArray);
+
     return (
         <div className="container">
-            <h1>MoMA Security Incidents</h1>
-            <a href="/create">
-                <button className="btn-primary">New Incident</button>
-            </a> 
-            {sortedIncidents.map(incident => ( //Render each incident as a card with severity and Ai risk
-                <div key={incident._id} className="incident-card" >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
+                <div>
+                    <h1>MoMA Security Incidents</h1>
+                    <p style={{ color: '#555', fontSize: '13px', margin: '4px 0 0 0' }}>
+                        Total Tracked: <strong>{metrics.total}</strong> | Active Critical: <strong style={{ color: '#dc2626' }}>{metrics.highPriority}</strong>
+                    </p>
+                </div>
+                
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <button 
+                        onClick={() => setShowAnalytics(!showAnalytics)}
+                        className="btn-primary"
+                        style={{ background: showAnalytics ? '#1e293b' : undefined, margin: 0 }}
+                    >
+                        ☰ {showAnalytics ? 'Hide Analytics' : 'Analytics Dashboard'}
+                    </button>
+
+                    <a href="/create">
+                        <button className="btn-primary" style={{ margin: 0 }}>New Incident</button>
+                    </a> 
+                </div>
+            </div>
+
+            {/* Collapsible Analytics Dashboard Panel matching app theme */}
+            <IncidentCharts 
+                incidents={incidentArray} 
+                isOpen={showAnalytics} 
+                onClose={() => setShowAnalytics(false)} 
+            />
+
+            {sortedIncidents.map(incident => (
+                <div key={incident._id} className="incident-card">
                     <h2>{incident.title}</h2>
                     <p>{incident.description}</p>
                     <div className="incident-severity">
