@@ -7,7 +7,7 @@ export const getIncidents = async (req, res) => {
     const { severity } = req.query;
 
     const filter = severity ? { severity } : {};
-    const incidents = (await Incident.find(filter)).toSorted({ createdAt: -1 });
+    const incidents = (await Incident.find(filter)).sort({ createdAt: -1 });
     res.status(200).json(incidents);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -82,6 +82,12 @@ export const updateIncident = async (req, res) => {
       },
       { new: true }
     );
+
+    // Guard prevent emitting/returning null if ID dosen't exist
+    if(!updatedIncident){
+      return res.status(404).json({ message: "Incident not found" })
+    }
+
     // Broadcast the updated incident to all clients
     const io = req.app.get("socketio");
     if (io) {
