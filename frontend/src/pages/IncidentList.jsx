@@ -37,11 +37,28 @@ export default function IncidentList() {
             setIncidents((prevIncidents) => [newincident, ...prevIncidents]);
         });
 
+        // listen for live updates 
+        socket.on("incidentUpdated", (updatedIncident) => {
+            setIncidents((prevIncidents) =>
+                prevIncidents.map((inc) =>
+                    inc._id === updatedIncident._id ? updatedIncident : inc
+                )
+            );
+        });
+
+        // listen for live deletions 
+        socket.on("incidentDeleted", (deletedId) => {
+            setIncidents((prevIncidents) =>
+                prevIncidents.filter((inc) => inc._id !== deletedId)
+            );
+        });
+
+
         // CLeanup socket connection on component unmount 
-        return() => {
+        return () => {
             socket.disconnect();
         };
-        }, [severityFilter, location.search]);
+    }, [severityFilter, location.search]);
 
     const handleDelete = async (id) => {
         try {
@@ -103,9 +120,9 @@ export default function IncidentList() {
                         Total Tracked: <strong>{metrics.total}</strong> | Active Critical: <strong style={{ color: '#dc2626' }}>{metrics.highPriority}</strong>
                     </p>
                 </div>
-                
+
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                    <button 
+                    <button
                         onClick={() => setShowAnalytics(!showAnalytics)}
                         className="btn-primary"
                         style={{ background: showAnalytics ? '#1e293b' : undefined, margin: 0 }}
@@ -115,15 +132,15 @@ export default function IncidentList() {
 
                     <a href="/create">
                         <button className="btn-primary" style={{ margin: 0 }}>New Incident</button>
-                    </a> 
+                    </a>
                 </div>
             </div>
 
             {/* Collapsible Analytics Dashboard Panel matching app theme */}
-            <IncidentCharts 
-                incidents={incidentArray} 
-                isOpen={showAnalytics} 
-                onClose={() => setShowAnalytics(false)} 
+            <IncidentCharts
+                incidents={incidentArray}
+                isOpen={showAnalytics}
+                onClose={() => setShowAnalytics(false)}
             />
 
             {sortedIncidents.map(incident => (

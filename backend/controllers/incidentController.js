@@ -50,7 +50,7 @@ export const updateIncident = async (req, res) => {
     // Broadcast the updated incident to all clients
     const io = req.app.get("socketio");
     if(io) {
-      io.emit("incidentUpdated", updateIncident);
+      io.emit("incidentUpdated", updatedIncident);
     }
     res.status(200).json(updatedIncident);
   } catch (error) {
@@ -60,11 +60,13 @@ export const updateIncident = async (req, res) => {
 
 export const deleteIncident = async (req, res) => {
   try {
+    const { id } = req.params;
     await Incident.findByIdAndDelete(req.params.id);
+   
     // Broadcast the updated incident to all clients
     const io = req.app.get("socketio");
     if(io) {
-      io.emit("incidentUpdated", updateIncident);
+      io.emit("incidentDeleted", id);
     }
     res.status(200).json({ message: "Incident deleted successfully" });
   } catch (error) {
