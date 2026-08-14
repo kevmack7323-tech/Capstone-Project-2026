@@ -1,6 +1,7 @@
 import api from "../api/axios.js";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { io } from "socket.io-client"
 import IncidentCharts from "../components/IncidentCharts.jsx";
 import { getIncidentMetrics } from "../utils/dashboardHelpers.js";
 
@@ -27,7 +28,20 @@ export default function IncidentList() {
         };
 
         fetchIncidents();
-    }, [severityFilter, location.search]);
+
+        // initialize Socket.io connection to backend server
+        const socket = io("http://localhost:5500");
+
+        // listen for live incident creation broadcasts
+        socket.on("incidentCreated", (newincident) => {
+            setIncidents((prevIncidents) => [newincident, ...prevIncidents]);
+        });
+
+        // CLeanup socket connection on component unmount 
+        return() => {
+            socket.disconnect();
+        };
+        }, [severityFilter, location.search]);
 
     const handleDelete = async (id) => {
         try {

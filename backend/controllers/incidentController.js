@@ -2,7 +2,7 @@ import Incident from "../models/Incident.js";
 
 export const getIncidents = async (req, res) => {
   try {
-     const { severity } = req.query;
+    const { severity } = req.query;
 
     const filter = severity ? { severity } : {};
     const incidents = await Incident.find(filter);
@@ -29,6 +29,11 @@ export const getIncidentById = async (req, res) => {
 export const createIncident = async (req, res) => {
   try {
     const incident = await Incident.create(req.body);
+    // Grab the io instance and emit the newly created document
+    const io = req.app.get("socketio");
+    if (io){
+    io.emit("incidentCreated", incident);
+    }
     res.status(201).json(incident);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -42,6 +47,11 @@ export const updateIncident = async (req, res) => {
       req.body,
       { new: true }
     );
+    // Broadcast the updated incident to all clients
+    const io = req.app.get("socketio");
+    if(io) {
+      io.emit("incidentUpdated", updateIncident);
+    }
     res.status(200).json(updatedIncident);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -51,6 +61,11 @@ export const updateIncident = async (req, res) => {
 export const deleteIncident = async (req, res) => {
   try {
     await Incident.findByIdAndDelete(req.params.id);
+    // Broadcast the updated incident to all clients
+    const io = req.app.get("socketio");
+    if(io) {
+      io.emit("incidentUpdated", updateIncident);
+    }
     res.status(200).json({ message: "Incident deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
