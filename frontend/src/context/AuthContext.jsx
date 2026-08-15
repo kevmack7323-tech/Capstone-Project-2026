@@ -1,40 +1,42 @@
 import { createContext, useState, useEffect } from "react";
+import { socket } from "../socket";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(() => {
+        const savedUser = localStorage.getItem("userInfo");
+        return savedUser ? JSON.parse(savedUser) : null;
+    });
 
     useEffect(() => {
-        // Rehydrate user session from localStorage on initial page load
-        const storedUser = localStorage.getItem("userInfo");
-        if (storedUser) {
-            try{
-                setUser(JSON.parse(storedUser));
-            } catch(error){
-                console.error("Failed to parse stored user info:", error);
-                localStorage.removeItem("userInfo");
-            }
+        if (user) {
+            socket.connect();
+        } else {
+            socket.disconnect();
         }
-        setLoading(false);
-    }, []);
+
+        return () => {
+            socket.disconnect();
+        };
+    }, [user]);
 
     // Save session & update state upon login
     const login = (userData) => {
-        localStorage.setItem("userInfo", JSON.stringify(userData));
         setUser(userData);
+        localStorage.setItem("userInfo", JSON.stringify(userData));
     };
 
     // Clear session & reset state upon logout
     const logout = () => {
-        localStorage.removeItem("userInfo");
         setUser(null);
+        localStorage.removeItem("userInfo");
+        socket.disconnect();
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
-            {!loading && children}
+        <AuthContext.Provider value={{ user, login, logout, }}>
+            {children}
         </AuthContext.Provider>
     );
 };
