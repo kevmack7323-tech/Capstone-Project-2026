@@ -5,6 +5,7 @@ import connectDB from "./config/db.js";
 import dotenv, { configDotenv } from "dotenv";
 import incidentRoutes from "./routes/incidentRoutes.js";
 import cors from "cors";
+import authRoutes from "./routes/authRoutes.js"
 
 configDotenv()
 
@@ -28,6 +29,8 @@ app.set("socketio", io);
 app.use(cors());
 app.use(express.json());
 app.use("/api/incidents", incidentRoutes);
+
+app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {
     res.send("Server is Running")
