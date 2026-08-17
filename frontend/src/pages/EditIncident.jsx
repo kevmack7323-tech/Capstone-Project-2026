@@ -69,22 +69,6 @@ export default function EditIncident() {
         </label>
 
         <label>
-          AI Risk Level:
-          <select
-            value={incident.ai_risk_level}
-            onChange={(e) =>
-              setIncident({ ...incident, ai_risk_level: e.target.value })
-            }
-          >
-            <option value="">Select Risk Level</option>
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-            <option value="Critical">Critical</option>
-          </select>
-        </label>
-
-        <label>
           Severity:
           <select
             value={incident.severity}
