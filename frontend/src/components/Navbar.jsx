@@ -3,16 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import logo from "../assets/logo.png";
 
-
-//Navigation bar for switching between pages in the application
+// Navigation bar for switching between pages in the application
 export default function Navbar() {
-const { user, logout } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
+
   return (
     <nav style={styles.nav}>
       <img
@@ -34,10 +34,13 @@ const { user, logout } = useContext(AuthContext);
           <Link className="nav-hover" style={styles.link} to="/create">
             Create Incident
           </Link>
+          <Link className="nav-hover" style={styles.link} to="/settings">
+            Settings
+          </Link>
 
           <div style={styles.userSection}>
             <div style={styles.userInfo}>
-              <span style={styles.userName}>{user.name}</span>
+              <span style={styles.userName}>{user.name || user.username}</span>
               <span style={styles.userRole}>{user.role || "Officer"}</span>
             </div>
             <button style={styles.logoutBtn} onClick={handleLogout}>
