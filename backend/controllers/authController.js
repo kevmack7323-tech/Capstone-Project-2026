@@ -1,18 +1,128 @@
+import User from "../models/User.js";
+import jwt from "jsonwebtoken";
+
+// Helper function to generate JWT
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN || "7d",
+  });
+};
+
+// @desc    Register new user
+// @route   POST /api/auth/register
+// @access  Public
+export const registerUser = async (req, res) => {
+  try {
+    const { name, username, email, password, role } = req.body;
+
+    if (!name || !username || !email || !password) {
+      return res.status(400).json({ message: "Please provide all required fields" });
+    }
+
+    const userExists = await User.findOne({ $or: [{ email }, { username }] });
+    if (userExists) {
+      return res.status(400).json({ message: "User with this email or username already exists" });
+    }
+
+    const user = await User.create({
+      name,
+      username,
+      email,
+      password,
+      role: role || "Officer",
+    });
+
+    if (user) {
+      res.status(201).json({
+        _id: user._id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(400).json({ message: "Invalid user data" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Authenticate user & get token
+// @route   POST /api/auth/login
+// @access  Public
+export const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Please provide email and password" });
+    }
+
+    const user = await User.findOne({ email }).select("+password");
+
+    if (user && (await user.matchPassword(password))) {
+      res.status(200).json({
+        _id: user._id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(401).json({ message: "Invalid email or password" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Get current user profile
+// @route   GET /api/auth/me
+// @access  Private
+export const getUserProfile = async (req, res) => {
+  try {
+    const userId = req.user?._id || req.user?.id;
+    const user = await User.findById(userId);
+
+    if (user) {
+      res.status(200).json({
+        _id: user._id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // @desc    Update user profile (name, username, email)
 // @route   PUT /api/auth/profile
 // @access  Private
 export const updateUserProfile = async (req, res) => {
   try {
-    const userId = req.user._id || req.user.id;
+    const userId = req.user?._id || req.user?.id;
     const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (req.body.name) user.name = req.body.name;
-    if (req.body.username) user.username = req.body.username;
-    if (req.body.email) user.email = req.body.email;
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+
+    if (req.body.username) {
+      user.username = req.body.username;
+    } else if (!user.username) {
+      user.username = user.email ? user.email.split("@")[0] : `user_${user._id.toString().slice(-4)}`;
+    }
 
     const updatedUser = await user.save();
 
@@ -25,18 +135,54 @@ export const updateUserProfile = async (req, res) => {
       token: generateToken(updatedUser._id),
     });
   } catch (error) {
-    // Handle Mongoose duplicate key error (code 11000)
+    console.error("PUT /api/auth/profile error:", error);
+
     if (error.code === 11000) {
-      const duplicateField = Object.keys(error.keyValue || {})[0] || "field";
-      return res.status(400).json({ message: `That ${duplicateField} is already in use` });
+      const field = Object.keys(error.keyValue || {})[0] || "field";
+      return res.status(400).json({ message: `That ${field} is already in use` });
     }
 
-    // Handle Mongoose Schema Validation errors
     if (error.name === "ValidationError") {
       const messages = Object.values(error.errors).map((val) => val.message);
       return res.status(400).json({ message: messages.join(", ") });
     }
 
-    res.status(500).json({ message: error.message || "Server error" });
+    res.status(500).json({ message: error.message || "Server error updating profile" });
+  }
+};
+
+// @desc    Change user password
+// @route   PUT /api/auth/change-password
+// @access  Private
+export const changeUserPassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "Please provide current and new password" });
+    }
+
+    const userId = req.user?._id || req.user?.id;
+    const user = await User.findById(userId).select("+password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isMatch = await user.matchPassword(currentPassword);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid current password" });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({ message: "Password must be at least 8 characters" });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
