@@ -6,6 +6,7 @@ import api from "../api/axios";
 const Register = () => {
   const [formData, setFormData] = useState({
     name: "",
+    username: "",
     email: "",
     password: "",
     role: "Officer",
@@ -63,6 +64,20 @@ const Register = () => {
         </div>
 
         <div>
+          <label className="block text-sm font-medium mb-1">Username</label>
+          <input
+            type="text"
+            name="username"
+            required
+            minLength={3}
+            value={formData.username}
+            onChange={handleChange}
+            className="w-full px-3 py-2 bg-slate-700 rounded border border-slate-600 focus:outline-none focus:border-blue-500"
+            placeholder="johndoe33"
+          />
+        </div>
+
+        <div>
           <label className="block text-sm font-medium mb-1">Email Address</label>
           <input
             type="email"
@@ -81,7 +96,7 @@ const Register = () => {
             type="password"
             name="password"
             required
-            minlength={6}
+            minLength={8}
             value={formData.password}
             onChange={handleChange}
             className="w-full px-3 py-2 bg-slate-700 rounded border border-slate-600 focus:outline-none focus:border-blue-500"
