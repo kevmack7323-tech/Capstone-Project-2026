@@ -13,21 +13,22 @@ const generateToken = (id) => {
 // @access  Public
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, username, email, password, role } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !username || !email || !password) {
       return res.status(400).json({ message: "Please provide all required fields" });
     }
 
-    // Check if user already exists
-    const userExists = await User.findOne({ email });
+    // Check if user or username already exists
+    const userExists = await User.findOne({ $or: [{ email }, { username }] });
     if (userExists) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: "User with this email or username already exists" });
     }
 
     // Create user (password gets hashed automatically via pre-save hook)
     const user = await User.create({
       name,
+      username,
       email,
       password,
       role: role || "Officer",
@@ -37,6 +38,7 @@ export const registerUser = async (req, res) => {
       res.status(201).json({
         _id: user._id,
         name: user.name,
+        username: user.username,
         email: user.email,
         role: user.role,
         token: generateToken(user._id),
@@ -67,6 +69,7 @@ export const loginUser = async (req, res) => {
       res.status(200).json({
         _id: user._id,
         name: user.name,
+        username: user.username,
         email: user.email,
         role: user.role,
         token: generateToken(user._id),
@@ -91,6 +94,7 @@ export const getUserProfile = async (req, res) => {
       res.status(200).json({
         _id: user._id,
         name: user.name,
+        username: user.username,
         email: user.email,
         role: user.role,
       });
@@ -122,6 +126,7 @@ export const updateUserProfile = async (req, res) => {
     res.status(200).json({
       _id: updatedUser._id,
       name: updatedUser.name,
+      username: updatedUser.username,
       email: updatedUser.email,
       role: updatedUser.role,
       token: generateToken(updatedUser._id),
